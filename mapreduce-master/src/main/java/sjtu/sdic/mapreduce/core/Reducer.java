@@ -23,8 +23,8 @@ public class Reducer {
      * 
      * 	doReduce manages one reduce task: it should read the intermediate
      * 	files for the task, sort the intermediate key/value pairs by key,
-     * 	call the user-defined reduce function {@code reduceFunc} for each key,
-     * 	and write reduceFunc's output to disk.
+     * 	call the user-defined reduce function {@code reduceF} for each key,
+     * 	and write reduceF's output to disk.
      * 	
      * 	You'll need to read one intermediate file from each map task;
      * 	{@code reduceName(jobName, m, reduceTask)} yields the file
@@ -37,9 +37,9 @@ public class Reducer {
      *  In the original paper, sorting is optional but helpful. Here you are
      *  also required to do sorting. Lib is allowed.
      * 	
-     * 	{@code reduceFunc()} is the application's reduce function. You should
+     * 	{@code reduceF()} is the application's reduce function. You should
      * 	call it once per distinct key, with a slice of all the values
-     * 	for that key. {@code reduceFunc()} returns the reduced value for that
+     * 	for that key. {@code reduceF()} returns the reduced value for that
      * 	key.
      * 	
      * 	You should write the reduce output as JSON encoded KeyValue
@@ -55,9 +55,9 @@ public class Reducer {
      * @param reduceTask which reduce task this is
      * @param outFile write the output here
      * @param nMap the number of map tasks that were run ("M" in the paper)
-     * @param reduceFunc user-defined reduce function
+     * @param reduceF user-defined reduce function
      */
-    public static void doReduce(String jobName, int reduceTask, String outFile, int nMap, ReduceFunc reduceFunc) {
+    public static void doReduce(String jobName, int reduceTask, String outFile, int nMap, ReduceFunc reduceF) {
         
     }
 }

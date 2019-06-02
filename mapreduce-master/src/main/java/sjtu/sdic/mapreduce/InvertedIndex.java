@@ -35,7 +35,7 @@ public class InvertedIndex {
             if (args[1].equals("sequential")) {
                 mr = Master.sequential("iiseq", files, 3, InvertedIndex::mapFunc, InvertedIndex::reduceFunc);
             } else {
-                mr = Master.distributed("iiseq", files, 3, args[1]);
+                mr = Master.distributed("wcdis", files, 3, args[1]);
             }
             mr.mWait();
         } else {
