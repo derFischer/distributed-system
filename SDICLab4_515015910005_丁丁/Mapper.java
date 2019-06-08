@@ -1,11 +1,11 @@
 package sjtu.sdic.mapreduce.core;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import sjtu.sdic.mapreduce.common.KeyValue;
 import sjtu.sdic.mapreduce.common.Utils;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -65,7 +65,68 @@ public class Mapper {
      * @param mapF the user-defined map function
      */
     public static void doMap(String jobName, int mapTask, String inFile, int nReduce, MapFunc mapF) {
-        
+        File file = new File(inFile);
+        Long filelength = file.length();
+        byte[] content = new byte[filelength.intValue()];
+        String con = "";
+        try
+        {
+            FileInputStream f = new FileInputStream(file);
+            f.read(content);
+            f.close();
+            con = new String(content, "UTF-8");
+        }
+        catch(FileNotFoundException e)
+        {
+            System.out.println("can't find the file\n");
+        }
+        catch(IOException e)
+        {
+            System.out.println("io exception\n");
+        }
+        catch(Exception e)
+        {
+            System.out.println("unsupported encoding\n");
+        }
+
+        List<KeyValue> pairs = mapF.map(inFile, con);
+        for(int i = 0; i < nReduce; ++i)
+        {
+            String subfile = Utils.reduceName(jobName, mapTask, i);
+            File subf = new File(subfile);
+            if(!file.exists())
+            {
+                try
+                {
+                    subf.createNewFile();
+                }
+                catch(IOException e)
+                {
+                    System.out.println("io exception\n");
+                }
+            }
+
+            List<KeyValue> pairsi = new ArrayList<KeyValue>();
+            for(KeyValue pair : pairs)
+            {
+                if(hashCode(pair.key) % nReduce == i)
+                {
+                    pairsi.add(pair);
+                }
+            }
+            
+            try
+            {
+                String stringcontent = JSON.toJSONString(pairsi);
+                FileWriter filewriter = new FileWriter(subfile);
+                filewriter.write(stringcontent);
+                filewriter.close();
+            }
+            catch(IOException e)
+            {
+                System.out.println("io exception\n");
+            }
+        }
     }
 
     /**

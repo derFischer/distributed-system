@@ -16,11 +16,35 @@ import java.util.regex.Pattern;
 public class InvertedIndex {
 
     public static List<KeyValue> mapFunc(String file, String value) {
-        return null;
+        List<KeyValue> result = new ArrayList<>();
+        Pattern pattern = Pattern.compile("[a-zA-Z0-9]+");
+        Matcher matcher = pattern.matcher(value);
+        while(matcher.find())
+        {
+            result.add(new KeyValue(matcher.group(), file));
+        }
+        return result;
     }
 
     public static String reduceFunc(String key, String[] values) {
-        return null;
+        List<String> files = new ArrayList<>();
+        for(int i = 0; i < values.length; ++i)
+        {
+            if(!files.contains(values[i]))
+            {
+                files.add(values[i]);
+            }
+        }
+        String number = Integer.toString(files.size());
+        String file = "";
+        for(String tmp : files)
+        {
+            file += tmp;
+            file += ",";
+        }
+        file = file.substring(0, file.length() - 1);
+        String result = number + " " + file;
+        return result;
     }
 
     public static void main(String[] args) {

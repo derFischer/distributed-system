@@ -17,11 +17,18 @@ import java.util.regex.Pattern;
 public class WordCount {
 
     public static List<KeyValue> mapFunc(String file, String value) {
-        return null;
+        List<KeyValue> result = new ArrayList<>();
+        Pattern pattern = Pattern.compile("[a-zA-Z0-9]+");
+        Matcher matcher = pattern.matcher(value);
+        while(matcher.find())
+        {
+            result.add(new KeyValue(matcher.group(), "1"));
+        }
+        return result;
     }
 
     public static String reduceFunc(String key, String[] values) {
-        return null;
+        return Integer.toString(values.length);
     }
 
     public static void main(String[] args) {
